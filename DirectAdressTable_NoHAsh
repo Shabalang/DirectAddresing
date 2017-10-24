@@ -1,0 +1,65 @@
+from DoublyLinkedList import DoublyLinkedList
+
+
+class Node:
+    def __init__(self, key = None, value = None):
+        self.key = key
+        self.value = value
+
+
+class DirectTable:
+    def __init__(self):
+        self.list = [None] * 5000000
+
+    # take care of chaining
+    def dt_insert(self, value):
+            node = self.hash_to_index(value)
+            position = self.list[node.key]
+            # if the index is None create a linked list for chaining
+            if position is None:
+                position = DoublyLinkedList()
+            # chain
+            position.add_node(node.value, node.key)
+            self.list[node.key] = position
+
+    def dt_search(self, value):
+        node = self.hash_to_index(value)
+        position = self.list[node.key]
+        if position is not None:
+            # search in the chain
+            result = position.list_search(node.value)
+            print(result.data)
+            return result.data
+        return False
+
+    def dt_delete(self, value):
+        node = self.hash_to_index(value)
+        position = self.list[node.key]
+        if position is not None:
+            # delete in the chain
+            result = position.list_delete(node.value)
+            return result
+        return False
+
+    def hash_to_index(self, value):
+        node = Node()
+        if str(value).isdigit():
+
+            if value < 5000000:
+                node.value = value
+                node.key = value
+                return node
+        # if its a char
+        else:
+            key = ord(value[0])
+            if key < 5000000:
+                node.value = value
+                node.key = key
+                return node
+    # dump the table
+    def dump_table(self):
+        for i in self.list:
+            if i is not None:
+                temp = i.dump()
+                for j in temp:
+                    print(j)
