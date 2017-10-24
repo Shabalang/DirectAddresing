@@ -1,0 +1,69 @@
+from DoublyLinkedList import DoublyLinkedList
+
+
+class Node:
+    def __init__(self, key=None, value=None):
+        self.key = key
+        self.value = value
+
+class DirectAddressTable:
+    def __init__(self):
+        self.list = [None] * 5000000
+
+    def __add__(self, value):
+        temp_key = self.to_natural(value)
+        if temp_key is not False:
+            if self.list[temp_key] is None:
+                # chaining to avoid collision
+                self.list[temp_key] = DoublyLinkedList()
+
+            self.list[temp_key].add_node(value, temp_key)
+            self.list[temp_key] = self.list[temp_key]
+
+    def remove(self, value):
+        temp_key = self.to_natural(value)
+        if temp_key is not False:
+            # delete in the chain
+            result = self.list[temp_key].list_delete(value)
+            return result
+        return False
+
+    def search(self, value):
+        temp_key = self.to_natural(value)
+        if self.list[temp_key] is not None:
+            result = self.list[temp_key].list_search(value)
+            print(result.data)
+            return result.data
+        return False
+
+    # This function interprets keys(character strings) to natural numbers in subtitle radix-128 notating
+    def to_natural(self, value):
+        power = 0
+        temp_key = 0
+        if value is not None:
+            for c in str(value):
+                if c.isdigit():
+                    temp_key += int(c) * (128 ** power)
+                else:
+                    temp_key += int(ord(c)) * (128 ** power)
+                power += 1
+            return temp_key
+        return False
+
+    def hash_by_division(self, natural_key):
+        # 5 misses are acceptable with a universe of 5000000 -> 5000000/5 = 1000000
+        key = natural_key % 997557
+        return key
+
+    def hash_by_multiplication(self, natural_key):
+        if key < 8000000:
+            key = (2654435761 * natural_key)/(2**32)
+            return key
+        return False
+
+    def dump_table(self):
+        for i in self.list:
+            if i is not None:
+                temp = i.dump()
+                for j in temp:
+                    print(j)
