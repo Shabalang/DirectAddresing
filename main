@@ -1,0 +1,23 @@
+from DirectTable import DirectTable
+from DirectAddressTable import DirectAddressTable as Table
+
+
+def main():
+    my_table = Table()
+    my_list = [1, 'a', 7, 'ab', 8, 20,"hello"]
+
+    for i in my_list:
+        my_table.__add__(i)
+
+    my_table.dump_table()
+    print("---------------")
+    my_table.dt_search('a')
+    print("---------------")
+    print(my_table.dt_delete('a'))
+    print("---------------")
+    my_table.dump_table()
+    print("---------------")
+    print(my_table.dt_delete(10))
+
+if __name__ == "__main__":
+    main()
